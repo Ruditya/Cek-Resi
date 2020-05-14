@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Axios from "axios";
 import _ from "lodash";
 import moment from "moment";
+import "./index.css";
 
 const App = () => {
   const [state , setState] = useState({});
@@ -9,6 +10,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
 
   const [cityName, setCityName] = useState("");
+  const [apiKey,setApiKey] = useState("");
 
   React.useEffect(() => {
     // fetchData();
@@ -16,14 +18,14 @@ const App = () => {
 
   const fetchData = () => {
     setError("");
-    const apiKey = "3500b52091a4b44d88536f2eb08f5304";
+    ;
     setLoading(true);
-    Axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`)
+    Axios.get(`http://api.shipping.esoftplay.com/waybill/${cityName}&appid=${apiKey}&units=metric`)
       .then(res => {
-        setState(res.data);
+        setState(res.data.value);
         setLoading(false);
       }).catch(err => {
-        setError("Unable to get weather information");
+        setError("Unable to get tracking information");
         console.log(err)
         setLoading(false);
       });
@@ -40,7 +42,7 @@ const App = () => {
     }
 
     if (_.isEmpty(state) && loading) {
-      return <p>Loading weather information</p>
+      return <p>Loading tracking information</p>
     }
 
     if (_.isEmpty(state)) {
@@ -49,31 +51,67 @@ const App = () => {
 
     return (
       <>
-        <p>The temperature is currently {state.main.temp}&#8451; but feels more like {state.main.feels_like}&#8451;</p>
-        <p>Currently the weather would best be described as {state.weather[0].description}</p>
-        <p>With highs of {state.main.temp_max}&#8451;</p>
-        <p>And lows of {state.main.temp_min}&#8451;</p>
-        <p>The sun will set at {moment.unix(state.sys.sunrise).format("h:mm:ss a")}</p>
-        <p>And will rise at {moment.unix(state.sys.sunset).format("h:mm:ss a")}</p>
-
+        <p>{state.result.summary.receiver_name} </p>
+        
         <div className={"divider"}/>
       </>
     )
   };
 
+  
   return (
-    <div className="cont">
-      <h1 className={"title"}>Weather API</h1>
+    <div class="container">
+  <div class="row">
+  <div class="col">
+    <div class="cont">
+      <h1 class={"title"}>Resi</h1>
 
       <div>
         {displayInformation()}
       </div>
 
-      <p>Enter city name</p>
+      <p>Enter Waybill</p>
       <input onChange={event => setCityName(event.target.value)} className={"input"}/>
-      <button className={"button"} onClick={fetchData}>Get Weather</button>
+      <p>Enter Courier</p>
+      <input onChange={event => setApiKey(event.target.value)} className={"input"}/>
+      
+      <button className={"button"} onClick={fetchData}>Track</button>
     </div>
+  
+  </div>
+
+  </div>
+  <div class="row">
+  <div class="col">
+    <div class="cont">
+      <h1 class={"title"}>Ongkir</h1>
+
+      <div>
+        {displayInformation()}
+      </div>
+
+      <p>Enter Origin</p>
+      <input onChange={event => setCityName(event.target.value)} className={"input"}/>
+      <p>Enter Destination</p>
+      <input onChange={event => setCityName(event.target.value)} className={"input"}/>
+      <p>Enter Courier</p>
+      <input onChange={event => setApiKey(event.target.value)} className={"input"}/>
+      
+      <button className={"button"} onClick={fetchData}>Cek Ongkir</button>
+    </div>
+  
+  </div>
+
+  </div>
+
+  </div>
+  
   );
-}
+
+  
+
+  }
 
 export default App;
+
+
